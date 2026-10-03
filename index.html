@@ -2,336 +2,156 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Love Meter — Darshan & Aishu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Love Meter</title>
   <style>
-    /* Reset & Clean Mobile Base */
-    *, *::before, *::after {
+    * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
-      -webkit-user-select: none;
     }
-
-    :root {
-      --bg: #f8f6f2;
-      --surface: #ffffff;
-      --border: #ece6dd;
-      --divider-line: #f1ebe2;
-      --text: #1d1c1a;
-      --text-subtle: #8e8880;
-      --accent: #d85d5d;
-      --track: #f1ece5;
-      --shadow: 0 16px 40px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
-    }
-
     body {
-      background-color: var(--bg);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
-      color: var(--text);
+      background-color: #faf9f6;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
-      min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px 16px;
+      padding: 24px;
+      color: #2b2b2b;
     }
-
-    /* Single Unified Minimalist Card */
     .card {
+      background: #ffffff;
+      border: 1px solid #eae7e1;
+      border-radius: 28px;
+      padding: 40px 28px;
       width: 100%;
-      max-width: 360px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 32px;
-      box-shadow: var(--shadow);
-      padding: 34px 24px 30px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    /* Individual Meter Block */
-    .meter-block {
-      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04);
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
     }
-
-    .meter-name {
-      font-size: 18px;
+    .label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #9a948d;
+      margin-bottom: 8px;
       font-weight: 600;
-      letter-spacing: -0.02em;
-      color: var(--text);
-      margin-bottom: 12px;
     }
-
-    /* Counter Display */
-    .counter-wrapper {
+    .name {
+      font-size: 1.35rem;
+      font-weight: 500;
+      color: #383431;
+      margin-bottom: 24px;
+    }
+    .score-container {
       position: relative;
-      display: inline-flex;
-      align-items: baseline;
-      justify-content: center;
-      margin-bottom: 12px;
-      transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: inline-block;
+      margin-bottom: 32px;
     }
-
-    .counter-wrapper.bump {
-      transform: scale(1.08);
-    }
-
-    .counter-val {
-      font-size: 48px;
+    .score {
+      font-size: 4rem;
       font-weight: 700;
       letter-spacing: -0.04em;
       line-height: 1;
-      color: var(--text);
-      font-variant-numeric: tabular-nums;
+      color: #1e1b18;
+      transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-
-    .counter-unit {
-      font-size: 20px;
+    .unit {
+      font-size: 1.5rem;
       font-weight: 500;
-      color: var(--accent);
-      margin-left: 3px;
+      color: #a8a29e;
+      margin-left: 2px;
     }
-
-    /* Micro Floating Indicator */
-    .plus-badge {
-      position: absolute;
-      top: -10px;
-      right: -24px;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--accent);
-      pointer-events: none;
-      opacity: 0;
-      animation: floatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    @keyframes floatUp {
-      0% {
-        opacity: 0;
-        transform: translateY(4px) scale(0.85);
-      }
-      25% {
-        opacity: 1;
-        transform: translateY(-2px) scale(1);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(-22px) scale(0.95);
-      }
-    }
-
-    /* Slim Minimalist Bar */
-    .progress-track {
-      width: 100%;
-      max-width: 240px;
-      height: 4px;
-      background: var(--track);
-      border-radius: 999px;
-      overflow: hidden;
-      margin-bottom: 18px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 999px;
-      width: 50%;
-      transition: width 0.25s ease-out;
-    }
-
-    /* Soft Tactile Circular Tap Button */
-    .tap-btn {
-      width: 58px;
-      height: 58px;
+    .btn {
+      background: #ffffff;
+      border: 1.5px solid #ebdcd5;
+      color: #b05c51;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
-      background: var(--accent);
-      border: none;
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 20px rgba(216, 93, 93, 0.25);
-      transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease;
-      outline: none;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(176, 92, 81, 0.08);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
       touch-action: manipulation;
     }
-
-    .tap-btn:active {
-      transform: scale(0.88);
-      box-shadow: 0 3px 8px rgba(216, 93, 93, 0.18);
+    .btn:active {
+      transform: scale(0.92);
+      background-color: #fffaf9;
+      box-shadow: 0 2px 8px rgba(176, 92, 81, 0.12);
     }
-
-    .tap-btn svg {
-      width: 25px;
-      height: 25px;
-      fill: #ffffff;
-      transform: translateY(1px);
+    .btn svg {
+      width: 32px;
+      height: 32px;
+      fill: currentColor;
     }
-
-    .tap-hint {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text-subtle);
-      margin-top: 8px;
+    .hint {
+      margin-top: 14px;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      color: #b5afa7;
     }
-
-    /* Elegant Soft Divider */
-    .divider {
-      width: 100%;
-      height: 1px;
-      background: var(--divider-line);
-      margin: 26px 0;
+    .pop {
+      animation: pop 0.4s ease forwards;
+    }
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
 <body>
 
-  <main class="card">
-    <!-- Meter 1: Darshan loves Aishu (Top, starts at 4900) -->
-    <div class="meter-block">
-      <h1 class="meter-name">Darshan loves Aishu</h1>
+  <div class="card">
+    <div class="label">Love Meter</div>
+    <div class="name">Darshan</div>
 
-      <div class="counter-wrapper" id="wrap-darshan">
-        <span class="counter-val" id="val-darshan">4,900</span>
-        <span class="counter-unit">%</span>
-        <div id="badge-darshan"></div>
-      </div>
-
-      <div class="progress-track" aria-hidden="true">
-        <div class="progress-fill" id="fill-darshan"></div>
-      </div>
-
-      <button class="tap-btn" id="btn-darshan" aria-label="Increase Darshan's love">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-        </svg>
-      </button>
-      <span class="tap-hint">Tap to love more</span>
+    <div class="score-container">
+      <span class="score" id="score">4900</span><span class="unit">%</span>
     </div>
 
-    <!-- Soft Hairline Divider -->
-    <div class="divider" aria-hidden="true"></div>
-
-    <!-- Meter 2: Aishu loves Darshan (Bottom, starts at 4000) -->
-    <div class="meter-block">
-      <h2 class="meter-name">Aishu loves Darshan</h2>
-
-      <div class="counter-wrapper" id="wrap-aishu">
-        <span class="counter-val" id="val-aishu">4,000</span>
-        <span class="counter-unit">%</span>
-        <div id="badge-aishu"></div>
-      </div>
-
-      <div class="progress-track" aria-hidden="true">
-        <div class="progress-fill" id="fill-aishu"></div>
-      </div>
-
-      <button class="tap-btn" id="btn-aishu" aria-label="Increase Aishu's love">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-        </svg>
-      </button>
-      <span class="tap-hint">Tap to love more</span>
-    </div>
-  </main>
+    <button class="btn" id="pumpBtn" aria-label="Increase Love">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+      </svg>
+    </button>
+    <div class="hint">Tap to pump</div>
+  </div>
 
   <script>
-    (function () {
-      var STEP = 10;
+    const STORAGE_KEY = 'meter_darshan_val';
+    const DEFAULT_VAL = 4900;
 
-      // Two meters config with customized initial values
-      var meters = [
-        {
-          key: 'meter_darshan_aishu',
-          initial: 4900,
-          valEl: document.getElementById('val-darshan'),
-          fillEl: document.getElementById('fill-darshan'),
-          wrapEl: document.getElementById('wrap-darshan'),
-          badgeEl: document.getElementById('badge-darshan'),
-          btnEl: document.getElementById('btn-darshan')
-        },
-        {
-          key: 'meter_aishu_darshan',
-          initial: 4000,
-          valEl: document.getElementById('val-aishu'),
-          fillEl: document.getElementById('fill-aishu'),
-          wrapEl: document.getElementById('wrap-aishu'),
-          badgeEl: document.getElementById('badge-aishu'),
-          btnEl: document.getElementById('btn-aishu')
-        }
-      ];
+    let savedVal = localStorage.getItem(STORAGE_KEY);
+    let currentScore = savedVal !== null ? parseInt(savedVal, 10) : DEFAULT_VAL;
 
-      // Safe LocalStorage Load
-      function loadPersisted(item) {
-        item.score = item.initial;
-        try {
-          var saved = localStorage.getItem(item.key);
-          if (saved !== null) {
-            var parsed = parseInt(saved, 10);
-            if (!isNaN(parsed) && parsed >= 0) {
-              item.score = parsed;
-            }
-          }
-        } catch (e) {
-          // Graceful fallback for sandbox modes
-        }
-      }
+    const scoreEl = document.getElementById('score');
+    const pumpBtn = document.getElementById('pumpBtn');
 
-      // Safe LocalStorage Save
-      function savePersisted(item) {
-        try {
-          localStorage.setItem(item.key, item.score.toString());
-        } catch (e) {
-          // In-memory fallback
-        }
-      }
+    function updateDisplay() {
+      scoreEl.textContent = currentScore.toLocaleString();
+    }
 
-      // Update UI elements
-      function renderMeter(item, animated) {
-        item.valEl.textContent = item.score.toLocaleString();
+    updateDisplay();
 
-        // Elegant cycling gauge progress
-        var cyclePercent = Math.min(100, Math.max(12, (item.score % 1000) / 10));
-        item.fillEl.style.width = cyclePercent + '%';
+    pumpBtn.addEventListener('click', () => {
+      currentScore += 10;
+      localStorage.setItem(STORAGE_KEY, currentScore);
+      updateDisplay();
 
-        if (animated) {
-          item.wrapEl.classList.remove('bump');
-          void item.wrapEl.offsetWidth; // Reflow for animation reset
-          item.wrapEl.classList.add('bump');
-
-          var badge = document.createElement('div');
-          badge.className = 'plus-badge';
-          badge.textContent = '+' + STEP;
-          item.badgeEl.appendChild(badge);
-
-          setTimeout(function () {
-            if (badge.parentNode) {
-              badge.parentNode.removeChild(badge);
-            }
-          }, 600);
-        }
-      }
-
-      // Initialize
-      meters.forEach(function (item) {
-        loadPersisted(item);
-        renderMeter(item, false);
-
-        item.btnEl.addEventListener('click', function () {
-          item.score += STEP;
-          savePersisted(item);
-          renderMeter(item, true);
-        });
-      });
-    })();
+      scoreEl.classList.remove('pop');
+      void scoreEl.offsetWidth;
+      scoreEl.classList.add('pop');
+    });
   </script>
 </body>
 </html>
