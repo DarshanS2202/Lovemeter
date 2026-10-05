@@ -75,7 +75,7 @@
       text-transform: uppercase;
     }
 
-    /* Emphasized Loved Person */
+    /* Emphasized Loved Person (Bigger & Significant) */
     .loved-name {
       font-size: 2.5rem;
       font-weight: 800;
@@ -140,6 +140,7 @@
     </div>
 
     <div class="subtitle" id="label-prefix">Darshan loves</div>
+    
     <!-- Loved person: larger & highlighted -->
     <div class="loved-name" id="loved-person">Aishu</div>
 
@@ -152,18 +153,17 @@
   </div>
 
   <script>
-    // Tab 1: Darshan loves Aishu (starts at 4900)
-    // Tab 2: Aishu loves Darshan (starts at 4000)
+    // Load saved scores from localStorage even if browser was completely closed
     const meterData = {
       1: {
         giver: "Darshan",
         receiver: "Aishu",
-        score: 4900
+        score: parseInt(localStorage.getItem('score_tab1')) || 4900
       },
       2: {
         giver: "Aishu",
         receiver: "Darshan",
-        score: 4000
+        score: parseInt(localStorage.getItem('score_tab2')) || 4000
       }
     };
 
@@ -185,9 +185,13 @@
     }
 
     function pumpHeart() {
-      // Increments count on tap
+      // Increment score
       meterData[activeTab].score += 10;
       document.getElementById('score-display').textContent = meterData[activeTab].score;
+
+      // Persist data locally so it stays saved across browser sessions
+      localStorage.setItem('score_tab1', meterData[1].score);
+      localStorage.setItem('score_tab2', meterData[2].score);
 
       // Small bounce animation on the loved name
       const nameEl = document.getElementById('loved-person');
@@ -196,6 +200,10 @@
         nameEl.style.transform = 'scale(1)';
       }, 150);
     }
+
+    // Initial render when page loads
+    renderView();
   </script>
 </body>
 </html>
+
