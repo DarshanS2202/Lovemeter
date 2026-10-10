@@ -128,6 +128,12 @@
       transform: scale(0.95);
       box-shadow: 0 4px 12px rgba(255, 45, 85, 0.3);
     }
+    
+    .status {
+      font-size: 0.75rem;
+      color: #aaa;
+      margin-top: 12px;
+    }
   </style>
 </head>
 <body>
@@ -145,29 +151,63 @@
     <div class="loved-name" id="loved-person">Aishu</div>
 
     <div class="counter-box">
-      <span class="count" id="score-display">4900</span>
+      <span class="count" id="score-display">...</span>
       <span class="unit">%</span>
     </div>
 
     <button class="pump-btn" id="pump-button" onclick="pumpHeart()">Tap to pump ❤️</button>
+    <div class="status" id="sync-status">Synced with cloud ✨</div>
   </div>
 
   <script>
-    // Load saved scores from localStorage even if browser was completely closed
+    // --- CLOUD CONFIGURATION ---
+    const BIN_ID = "6ac9b2f6ac6210605a24625a";
+    const API_KEY = "$2a$10$A5QvblP3GONV1aP3w6lYu.4sIIeun8f1OV3vu2iNlgvFTbAZMvn5q";
+    // ---------------------------
+
     const meterData = {
-      1: {
-        giver: "Darshan",
-        receiver: "Aishu",
-        score: parseInt(localStorage.getItem('score_tab1')) || 4900
-      },
-      2: {
-        giver: "Aishu",
-        receiver: "Darshan",
-        score: parseInt(localStorage.getItem('score_tab2')) || 4000
-      }
+      1: { giver: "Darshan", receiver: "Aishu", score: 4900 },
+      2: { giver: "Aishu", receiver: "Darshan", score: 4000 }
     };
 
     let activeTab = 1;
+
+    async function fetchScores() {
+      try {
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+          headers: { 'X-Master-Key': API_KEY }
+        });
+        const data = await response.json();
+        if (data && data.record) {
+          meterData[1].score = data.record.tab1;
+          meterData[2].score = data.record.tab2;
+          renderView();
+        }
+      } catch (err) {
+        document.getElementById('sync-status').textContent = "Offline mode";
+        renderView();
+      }
+    }
+
+    async function saveScores() {
+      document.getElementById('sync-status').textContent = "Syncing...";
+      try {
+        await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Master-Key': API_KEY
+          },
+          body: JSON.stringify({
+            tab1: meterData[1].score,
+            tab2: meterData[2].score
+          })
+        });
+        document.getElementById('sync-status').textContent = "Synced with cloud ✨";
+      } catch (err) {
+        document.getElementById('sync-status').textContent = "Sync failed ❌";
+      }
+    }
 
     function renderView() {
       const data = meterData[activeTab];
@@ -185,15 +225,13 @@
     }
 
     function pumpHeart() {
-      // Increment score
       meterData[activeTab].score += 10;
       document.getElementById('score-display').textContent = meterData[activeTab].score;
 
-      // Persist data locally so it stays saved across browser sessions
-      localStorage.setItem('score_tab1', meterData[1].score);
-      localStorage.setItem('score_tab2', meterData[2].score);
+      // Save live to the cloud database
+      saveScores();
 
-      // Small bounce animation on the loved name
+      // Bounce animation
       const nameEl = document.getElementById('loved-person');
       nameEl.style.transform = 'scale(1.12)';
       setTimeout(() => {
@@ -201,9 +239,8 @@
       }, 150);
     }
 
-    // Initial render when page loads
-    renderView();
+    // Load cloud scores immediately when page opens
+    fetchScores();
   </script>
 </body>
 </html>
-
